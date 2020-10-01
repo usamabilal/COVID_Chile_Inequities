@@ -56,6 +56,8 @@ pop<-fread("Data/ine_estimaciones-y-proyecciones-2002-2035_base-2017_comunas0381
   filter(stage!="") %>% 
   group_by(id_comuna, age, stage) %>% 
   summarise(pop=sum(pop))
+unzip("Data/DEFUNCIONES_FUENTE_DEIS_2016_2020_24092020/DEFUNCIONES_FUENTE_DEIS_2016_2020_24092020.csv.zip", 
+      exdir="Data/DEFUNCIONES_FUENTE_DEIS_2016_2020_24092020/", overwrite = T)
 deaths<-fread("Data/DEFUNCIONES_FUENTE_DEIS_2016_2020_24092020/DEFUNCIONES_FUENTE_DEIS_2016_2020_24092020.csv") %>% 
   mutate(date=dmy(FECHA_DEF),
          month=month(date),
