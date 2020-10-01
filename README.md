@@ -1,1 +1,1 @@
-# COVID_Chile_Inequities
+# Analysis of inequities in mortality in Chile (pre and during COVID-19 pandemic)
