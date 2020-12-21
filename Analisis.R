@@ -121,7 +121,7 @@ dta %>% group_by(stage) %>%
 
 
 p1<-ggplot(dta, aes(x=years, y=rate)) +
-  stat_smooth(method="lm", se=F)+
+  stat_smooth(method="lm", se=F, color="black")+
   geom_point()+
   scale_y_log10()+
   annotation_logticks(sides="l")+
@@ -136,7 +136,7 @@ p1<-ggplot(dta, aes(x=years, y=rate)) +
         strip.text = element_text(color="black", size=16, face="bold"),
         strip.background = element_blank())
 p2<-ggplot(dta, aes(x=hacin, y=rate)) +
-  stat_smooth(method="lm", se=F)+
+  stat_smooth(method="lm", se=F, color="black")+
   geom_point()+
   scale_y_log10()+
   annotation_logticks(sides="l")+
@@ -153,3 +153,47 @@ p2<-ggplot(dta, aes(x=hacin, y=rate)) +
 pall<-arrangeGrob(grobs=list(p1, p2), ncol=1)
 ggsave("figure.pdf",pall, width=10, height=10)
 
+
+# Secondary analysis (not in paper, but for response to reviewers)
+# looking at correlation between the TWO ses measures and COVID-19 incidence from surveillance data
+covid<-fread("https://raw.githubusercontent.com/MinCiencia/Datos-COVID19/master/output/producto1/Covid-19.csv") %>% 
+# by same date (August 31)
+  mutate(covid_rate=`2020-08-31`/`Poblacion`*100000) %>% 
+  rename(id_comuna=`Codigo comuna`) %>% 
+  select(id_comuna, covid_rate) %>% 
+  filter(!is.na(id_comuna)) %>% 
+  full_join(edu) %>% full_join(hacin) %>% 
+  filter(id_comuna%in%gran_santiago)
+cor(log(covid$covid_rate), covid$years)
+cor(log(covid$covid_rate), covid$hacin)
+
+p1a<-ggplot(covid, aes(x=years, y=covid_rate)) +
+  stat_smooth(method="lm", se=F, color="black")+
+  geom_point()+
+  scale_y_log10()+
+  annotation_logticks(sides="l")+
+  labs(y="COVID-19 incidence rate per 100,000",
+       x="Average years of schooling",
+       tag="A")+
+  theme_bw() +
+  theme(axis.text=element_text(color="black", size=14),
+        axis.title=element_text(color="black", size=16, face="bold"),
+        plot.title = element_text(color="black", size=16, face="bold"),
+        strip.text = element_text(color="black", size=16, face="bold"),
+        strip.background = element_blank())
+p1b<-ggplot(covid, aes(x=hacin, y=covid_rate)) +
+  stat_smooth(method="lm", se=F, color="black")+
+  geom_point()+
+  scale_y_log10()+
+  annotation_logticks(sides="l")+
+  labs(y="COVID-19 incidence rate per 100,000",
+       x="% households living in overcrowded situation",
+       tag="B")+
+  theme_bw() +
+  theme(axis.text=element_text(color="black", size=14),
+        axis.title=element_text(color="black", size=16, face="bold"),
+        plot.title = element_text(color="black", size=16, face="bold"),
+        strip.text = element_text(color="black", size=16, face="bold"),
+        strip.background = element_blank())
+p1a
+p1b

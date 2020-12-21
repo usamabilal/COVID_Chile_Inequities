@@ -1,1 +1,1 @@
-# Analysis of inequities in mortality in Chile (pre and during COVID-19 pandemic)
+# Analysis of inequities in mortality in Santiago de Chile (pre and during COVID-19 pandemic)
